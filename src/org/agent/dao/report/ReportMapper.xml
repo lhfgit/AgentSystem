@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.report.ReportMapper">
+	<select id="accountBalance" parameterType="account" resultType="account">
+	SELECT a.*,u.userName FROM as_account a JOIN as_user u ON a.userId=u.id
+	</select>
+	<select id="getReportProduct" resultType="ReportProduct" parameterType="ReportProduct">
+	SELECT configTypeName,COUNT(1) number,SUM(price) price 
+	FROM as_keywords k JOIN as_systemconfig s ON k.productType=s.id 
+	<where>
+	<if test="startTime !=null"> and k.regDatetime<![CDATA[>=]]>#{startTime}</if>
+	<if test="endTime !=null"> and k.regDatetime<![CDATA[<=]]>#{endTime}</if>
+	</where>
+	GROUP BY configTypeName
+	
+	</select>
+</mapper>

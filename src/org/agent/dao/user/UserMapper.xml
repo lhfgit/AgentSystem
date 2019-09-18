@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.user.UserMapper">
+
+	<resultMap type="user" id="user_role_map">
+		<id column="id" property="id" />
+		<result column="userCode" property="userCode" />
+		<result column="userName" property="userName" />
+		<result column="userPassword" property="userPassword" />
+		<result column="creationTime" property="creationTime" />
+		<result column="lastLoginTime" property="lastLoginTime" />
+		<result column="createdBy" property="createdBy" />
+		<result column="lastUpdateTime" property="lastUpdateTime" />
+		<result column="isStart" property="isStart" />
+		<result column="roleId" property="roleId" />
+		<association property="role" javaType="role">
+			<result column="id" property="id" />
+			<result column="roleName" property="roleName" />
+			<result column="creationTime" property="creationTime" />
+			<result column="createdBy" property="createdBy" />
+			<result column="lastUpdateTime" property="lastUpdateTime" />
+			<result column="isStart" property="isStart" />
+
+		</association>
+	</resultMap>
+
+
+	<!-- public List<User> getUserList(User user); -->
+	<select id="getUserList" resultMap="user_role_map" parameterType="user">
+		SELECT u.*,roleName FROM as_user AS u 
+		inner join as_role r on u.roleId=r.id 
+		where 1=1
+		
+		<if test="userName !=null and userName.length() > 0">and userName like concat ('%',#{userName},'%')</if>
+		<if test="userCode !=null and userCode.length() > 0 and userCode!=''">and userCode like concat ('%',#{userCode},'%')</if>
+		<if test="roleId !=null and roleId > 0"> and roleId=#{roleId}</if>	
+		<if test="isStart !=null "> and u.isStart=#{isStart}</if>
+		<if test="starNum !=null and pageSize !=null">LIMIT #{starNum},#{pageSize}</if>
+		
+	</select>
+	<!-- public User getUser(User user); -->
+	<select id="getUser" resultType="org.agent.pojo.User"
+		parameterType="org.agent.pojo.User">
+		SELECT * FROM as_user
+		<trim prefix="where " prefixOverrides="and |or">
+			<if test="userCode !=null"> and userCode = '${userCode}'</if>
+			<if test="id !=null"> and id=${id}</if>
+		</trim>
+	</select>
+	<select id="checkLogin" resultType="org.agent.pojo.User"
+		parameterType="org.agent.pojo.User">
+		SELECT * FROM as_user
+		<trim prefix="where " prefixOverrides="and |or">
+			<if test="userCode !=null"> and userCode = '${userCode}'</if>
+			<if test="userPassword !=null"> and userPassword='${userPassword}'</if>
+			<if test="isStart !=null"> and isStart='${isStart}'</if>
+		</trim>
+	</select>
+
+	<!-- public int count(User user); -->
+	<select id="count" resultType="int" parameterType="org.agent.pojo.User">
+		SELECT count(1) FROM as_user
+		<trim prefix="where " prefixOverrides="and |or">
+			<if test="userName !=null"> and userName like '%${userName}%'</if>
+			<if test="userCode !=null"> and userCode like '%${userCode}%'</if>
+			<if test="roleId !=unll"> and roleId=${roleId}</if>
+			<if test="isStart !=null"> and isStart=${isStart}</if>
+		</trim>
+	</select>
+
+	<!-- public int addUser(User user); -->
+	<insert id="addUser" parameterType="org.agent.pojo.User">
+
+		<trim prefix="INSERT INTO as_user(" suffix=")" suffixOverrides=",">
+			<if test="id !=null">id,</if>
+			<if test="userCode !=null">userCode,</if>
+			<if test="userName !=null">userName,</if>
+			<if test="userPassword !=null">userPassword,</if>
+			<if test="creationTime !=null">creationTime,</if>
+			<if test="lastLoginTime !=null">lastLoginTime,</if>
+			<if test="createdBy !=null">createdBy,</if>
+			<if test="lastUpdateTime !=null">lastUpdateTime,</if>
+			<if test="isStart !=null">isStart,</if>
+			<if test="roleId !=null">roleId,</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="id !=null">${id},</if>
+			<if test="userCode !=null">#{userCode},</if>
+			<if test="userName !=null">#{userName},</if>
+			<if test="userPassword !=null">#{userPassword},</if>
+			<if test="creationTime !=null">#{creationTime},</if>
+			<if test="lastLoginTime !=null">#{lastLoginTime},</if>
+			<if test="createdBy !=null">#{createdBy},</if>
+			<if test="lastUpdateTime !=null">#{lastUpdateTime},</if>
+			<if test="isStart !=null">${isStart},</if>
+			<if test="roleId !=null">${roleId},</if>
+		</trim>
+		<selectKey keyProperty="id" resultType="int">
+		select last_insert_id()
+		</selectKey>
+	</insert>
+	<!-- public int modifyUser(User user); -->
+	<update id="modifyUser" parameterType="org.agent.pojo.User">
+		<trim prefix="UPDATE as_user SET" suffix="where "
+			suffixOverrides=",">
+			<if test="userCode !=null">userCode=#{userCode},</if>
+			<if test="userName !=null">userName=#{userName},</if>
+			<if test="userPassword !=null">userPassword=#{userPassword},</if>
+			<if test="creationTime !=null">creationTime=#{creationTime},</if>
+			<if test="lastLoginTime !=null">lastLoginTime=#{lastLoginTime},</if>
+			<if test="createdBy !=null">createdBy=#{createdBy},</if>
+			<if test="lastUpdateTime !=null">lastUpdateTime=#{lastUpdateTime},</if>
+			<if test="isStart !=null">isStart=${isStart},</if>
+			<if test="roleId !=null">roleId=${roleId},</if>
+		</trim>
+		id=${id}
+	</update>
+	<!-- public int deleteUser(User user); -->
+	<delete id="deleteUser" parameterType="org.agent.pojo.User">
+		DELETE from as_user WHERE
+		id=${id}
+	</delete>
+
+
+</mapper>

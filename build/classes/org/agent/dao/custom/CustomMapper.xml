@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.custom.CustomMapper">
+	<select id="getList" parameterType="custom" resultType="custom">
+		SELECT * FROM as_customs
+		<where>
+			<if test="agentId !=null">and agentId=#{agentId}</if>
+			<if test="agentName !=null">and agentName like CONCAT('%',#{agentName},'%') </if>
+			<if test="customName !=null">and customName like CONCAT('%',#{customName},'%') </if>
+		</where>
+		<if test="starNum!=null and pageSize!=null">LIMIT #{starNum},#{pageSize}</if>
+	</select>
+	<insert id="addCustom" parameterType="custom">
+		INSERT INTO as_customs
+		(agentId,agentName,customName,customType,customTypeName,siteUrl,customStatus,
+		bossName,cardType,cardTypeName,cardNum,companyTel,companyFax,regDatetime,
+		country,province,city,area,companyAddress,memo,agentCode)
+		VALUES
+		(#{agentId},#{agentName},#{customName},#{customType},#{customTypeName},#{siteUrl},#{customStatus},#{bossName},#{cardType},#{cardTypeName},#{cardNum},#{companyTel},#{companyFax},#{regDatetime},#{country},#{province},#{city},#{area},#{companyAddress},#{memo},#{agentCode})
+		<selectKey keyProperty="id" resultType="int">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	<update id="modifyCustom" parameterType="custom">
+		<trim prefix="update as_customs set " suffix="where"
+			suffixOverrides=",">
+			<if test="agentId !=null">agentId=#{agentId},</if>
+			<if test="agentName !=null">agentName=#{agentName},</if>
+			<if test="customType !=null">customType=#{customType},</if>
+			<if test="customTypeName !=null">customTypeName=#{customTypeName},</if>
+			<if test="siteUrl !=null">siteUrl=#{siteUrl},</if>
+			<if test="customStatus !=null">customStatus=#{customStatus},</if>
+			<if test="bossName !=null">bossName=#{bossName},</if>
+			<if test="cardType !=null">cardType=#{cardType},</if>
+			<if test="cardTypeName !=null">cardTypeName=#{cardTypeName},</if>
+			<if test="cardNum !=null">cardNum=#{cardNum},</if>
+			<if test="companyTel !=null">companyTel=#{companyTel},</if>
+			<if test="companyFax !=null">companyFax=#{companyFax},</if>
+			<if test="regDatetime !=null">regDatetime=#{regDatetime},</if>
+			<if test="country !=null">country=#{country},</if>
+			<if test="province !=null">province=#{province},</if>
+			<if test="city !=null">city=#{city},</if>
+			<if test="area !=null">area=#{area},</if>
+			<if test="companyAddress !=null">companyAddress=#{companyAddress},</if>
+			<if test="memo !=null">memo=#{memo},</if>
+			<if test="agentCode !=null">agentCode=#{agentCode},</if>
+		</trim>
+		id=#{id}
+	</update>
+	<delete id="deleteCustom" parameterType="custom">
+		delete from as_customs
+		<where>
+			<if test="id !=null">and id=#{id}</if>
+			<if test="agentId !=null">and agentId=#{agentId}</if>
+		</where>
+	</delete>
+	<select id="count" parameterType="custom" resultType="int">
+		select count(1) from as_customs
+		<where>
+			<if test="agentId !=null">and agentId=#{agentId}</if>
+			<if test="agentName !=null">and agentName like CONCAT('%',#{agentName},'%') </if>
+			<if test="customName !=null">and customName like CONCAT('%',#{customName},'%') </if>
+		</where>
+	</select>
+	<select id="isExitCustomName" parameterType="custom" resultType="int">
+		select count(1) from as_customs
+		<where>
+			<if test="customName!=null"> and customName=#{customName}</if>
+			<if test="customStatus!=null"> and customStatus=#{customStatus}</if>
+			<if test="id!=null"> and id <![CDATA[<>]]>#{id}</if>
+		</where>
+	</select>
+	<select id="getCustomById" parameterType="custom" resultType="custom">
+		select * from as_customs where id=#{id}
+	</select>
+	<select id="getCustomBySearch" parameterType="custom"
+		resultType="custom">
+		select * from as_customs
+		<where>
+			<if test="agentId !=null">agentId=#{agentId}</if>
+			<if test="customName!=null"> and customName like concat('%',#{customName},'%')</if>
+			<if test="customStatus!=null"> and customStatus=#{customStatus}</if>
+
+		</where>
+		limit 10
+	</select>
+	<update id="modifyCustomAtatus" parameterType="custom">
+		update as_customs
+		<set>
+			<if test="customStatus ==0">customStatus=1,</if>
+			<if test="customStatus ==1">customStatus=0,</if>
+		</set>
+		where id=#{id}
+	</update>
+</mapper>

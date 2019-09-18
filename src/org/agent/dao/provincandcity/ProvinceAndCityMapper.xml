@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.provincandcity.ProvinceAndCityMapper">
+	<select id="getProvinceList" resultType="Province">
+		SELECT * FROM hat_province
+	</select>
+
+	<select id="getCityList" parameterType="province" resultType="city">
+		SELECT * FROM hat_city WHERE father=#{provinceID}
+	</select>
+
+
+	<select id="getAreaList" parameterType="city" resultType="area">
+		SELECT * FROM hat_area WHERE father=#{cityID}
+	</select>
+</mapper>

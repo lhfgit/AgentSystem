@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.systemconfig.SystemconfigMapper">
+	<!-- 查询配置项 -->
+	<select id="getSystemConfig" parameterType="Systemconfig"
+		resultType="Systemconfig">
+		select * from as_systemconfig
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="isStart!=null"> and isStart=#{isStart}</if>
+			<if test="configType !=null"> and configType=#{configType} </if>
+			<if test="id !=null"> and id=${id}</if>
+		</trim>
+	</select>
+	<!-- 查询已经启用的配置项 -->
+	<select id="getSystemConfigIsStart" parameterType="Systemconfig"
+		resultType="Systemconfig">
+		select * from as_systemconfig
+		<trim prefix="where " prefixOverrides="and|or">
+<if test="isStart!=null"> and isStart=#{isStart}</if>
+			<if test="configType !=null"> and configType=#{configType} </if>
+			<if test="id !=null"> and id=${id}</if>
+		</trim>
+	</select>
+	<!-- 添加 -->
+	<insert id="addSystemConfigIsStart" parameterType="Systemconfig">
+		<trim prefix="insert into as_systemconfig(" suffix=")"
+			suffixOverrides=",">
+			<if test="configType !=null">configType,</if>
+			<if test="configTypeName !=null">configTypeName,</if>
+			<if test="configTypeValue !=null">configTypeValue,</if>
+			<if test="configValue !=null">configValue,</if>
+			<if test="isStart !=null">isStart,</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="configType !=null">${configType},</if>
+			<if test="configTypeName !=null">#{configTypeName},</if>
+			<if test="configTypeValue !=null">${configTypeValue},</if>
+			<if test="configValue !=null">#{configValue},</if>
+			<if test="isStart !=null">#{isStart},</if>
+		</trim>
+	</insert>
+	<!-- 更新 -->
+	<update id="modifySystemConfigIsStart" parameterType="Systemconfig">
+		<trim prefix="update as_systemconfig set" suffix="where"
+			suffixOverrides=",">
+			<if test="configType !=null">configType=${configType},</if>
+			<if test="configTypeName !=null">configTypeName=#{configTypeName},</if>
+			<if test="configTypeValue !=null">configTypeValue=${configTypeValue},</if>
+			<if test="configValue !=null">configValue=#{configValue},</if>
+			<if test="isStart !=null">isStart=${isStart},</if>
+		</trim>
+		id=${id}
+
+	</update>
+	<!-- 是否重复 -->
+	<select id="isPeatConfig" parameterType="systemconfig"
+		resultType="int">
+
+		<trim prefix="select count(1) from as_systemconfig where " prefixOverrides="and|or">
+			<if test="id !=null"> and id=${id}</if>
+			<if test="configType !=null"> and configType=${configType}</if>
+			<if test="configTypeName !=null"> and configTypeName=#{configTypeName}</if>
+		</trim>
+	</select>
+
+	<!--一级编号固定时，查询最大的二级编号 -->
+	<select id="maxTypeValueByType" parameterType="int" resultType="int">
+		SELECT  MAX(configTypeValue) FROM as_systemconfig WHERE configType=${value}
+	</select>
+
+	<delete id="deleteSystemConfig" parameterType="systemconfig">
+		delete from as_systemconfig where id=${id}
+	</delete>
+</mapper>

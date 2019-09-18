@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.permission.PermissionMapper">
+	<!-- public List<Permission> getlist(Permission permission); public int 
+		addPermission(Permission permission); public int modifyPermission(Permission 
+		permission); public int deletePermission(Permission permission); -->
+	<select id="getlist" parameterType="permission" resultType="permission">
+		SELECT * FROM as_role_premission WHERE roleId=${roleId} AND
+		isStart=${isStart}
+	</select>
+	<insert id="addPermission" parameterType="permission">
+
+		<trim prefix="insert into as_role_premission(" suffix=")"
+			suffixOverrides=",">
+			<if test="roleId !=null">roleId,</if>
+			<if test="functionId !=null">functionId,</if>
+			<if test="creationTime !=null">creationTime,</if>
+			<if test="createdBy !=null">createdBy,</if>
+			<if test="lastUpdateTime !=null">lastUpdateTime,</if>
+			<if test="isStart !=null">isStart,</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+			<if test="roleId !=null">${roleId},</if>
+			<if test="functionId !=null">${functionId},</if>
+			<if test="creationTime !=null">#{creationTime},</if>
+			<if test="createdBy !=null">#{createdBy},</if>
+			<if test="lastUpdateTime !=null">#{lastUpdateTime},</if>
+			<if test="isStart !=null">${isStart},</if>
+		</trim>
+	</insert>
+	<update id="modifyPermission" parameterType="permission">
+		UPDATE as_role_premission
+		<trim prefix="SET" suffix="where" suffixOverrides=",">
+			<if test="roleId !=null">roleId=${roleId},</if>
+			<if test="functionId !=null">functionId=${functionId},</if>
+			<if test="creationTime !=null">creationTime=#{creationTime},</if>
+			<if test="createdBy !=null">createdBy=#{createdBy},</if>
+			<if test="lastUpdateTime !=null">lastUpdateTime=#{lastUpdateTime},</if>
+			<if test="isStart !=null">isStart=${isStart},</if>
+		</trim>
+		id=${id}
+	</update>
+
+	<delete id="deletePermission" parameterType="permission">
+		delete from as_role_premission  
+		<trim prefix="where " prefixOverrides="and|or">
+		<if test="id !=null">and id=${id}</if>
+		<if test="roleId !=null"> and roleId=${roleId}</if>
+		<if test="functionId !=null">and functionId=${functionId}</if>
+		</trim>
+	</delete>
+</mapper>

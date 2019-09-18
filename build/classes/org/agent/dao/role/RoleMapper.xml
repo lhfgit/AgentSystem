@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.role.RoleMapper">
+
+	<select id="getRoleList" parameterType="role" resultType="role">
+	SELECT * FROM as_role
+		<trim prefix=" WHERE " prefixOverrides="and|or">
+			<if test="id !=null"> and id=${id}</if>
+			<if test="roleName !=null"> and roleName=#{roleName}</if>
+			<if test="creationTime!=null"> and creationTime=#{creationTime}</if>
+			<if test="createdBy !=null"> and createdBy=#{createdBy}</if>
+			<if test="lastUpdateTime !=null"> and lastUpdateTime=#{lastUpdateTime}</if>
+			<if test="isStart !=null"> and isStart=${isStart}</if>
+		</trim>
+	</select>
+	<select id="getRole" parameterType="role" resultType="role">
+	SELECT * FROM as_role
+		<trim prefix=" WHERE " prefixOverrides="and|or">
+			<if test="id !=null"> and id=${id}</if>
+			<if test="roleName !=null"> and roleName=#{roleName}</if>
+			<if test="creationTime!=null"> and creationTime=#{creationTime}</if>
+			<if test="createdBy !=null"> and createdBy=#{createdBy}</if>
+			<if test="lastUpdateTime !=null"> and lastUpdateTime=#{lastUpdateTime}</if>
+			<if test="isStart !=null"> and isStart=${isStart}</if>
+		</trim>
+	</select>
+	<select id="getRoleIdAndNameList"  resultType="role">
+	SELECT id,roleName FROM as_role
+		
+	</select>
+
+	<insert id="addRole" parameterType="role">
+		<trim prefix="INSERT INTO as_role(" suffix=")" suffixOverrides=",">
+			<if test="id !=null"> id,</if>
+			<if test="roleName !=null"> roleName,</if>
+			<if test="creationTime!=null"> creationTime,</if>
+			<if test="createdBy !=null"> createdBy,</if>
+			<if test="lastUpdateTime !=null"> lastUpdateTime,</if>
+			<if test="isStart !=null"> isStart,</if>
+		</trim>
+		<trim prefix="values(" suffix=")" suffixOverrides=",">
+		<if test="id !=null"> ${id},</if>
+		<if test="roleName !=null"> #{roleName},</if>
+		<if test="creationTime!=null"> #{creationTime},</if>
+		<if test="createdBy !=null"> #{createdBy},</if>
+		<if test="lastUpdateTime !=null"> #{lastUpdateTime},</if>
+		<if test="isStart !=null"> ${isStart},</if>
+		</trim>
+	</insert>
+	<delete id="deleteRole" parameterType="role">
+		DELETE FROM as_role WHERE id=${id}
+	</delete>
+
+	<update id="modifyRole" parameterType="role">
+		<trim prefix="UPDATE as_role SET " suffix="where"
+			suffixOverrides=",">
+			<if test="roleName !=null"> roleName=#{roleName},</if>
+			<if test="creationTime!=null"> creationTime=#{creationTime},</if>
+			<if test="createdBy !=null"> createdBy=#{createdBy},</if>
+			<if test="lastUpdateTime !=null"> lastUpdateTime=#{lastUpdateTime},</if>
+			<if test="isStart !=null"> isStart=${isStart},</if>
+		</trim>
+		id=${id}
+	</update>
+	
+	<select id="isPeatRoleName"  resultType="int">
+	SELECT COUNT(1) FROM as_role
+	<trim prefix=" WHERE " prefixOverrides="and|or">
+			
+			<if test="roleName !=null"> and roleName=#{roleName}</if>
+			
+			<if test="isStart !=null"> and isStart=${isStart}</if>
+		</trim>
+	
+	</select>
+	<select id="countUserByRole" parameterType="int" resultType="int">
+	SELECT COUNT(1) FROM as_role r JOIN as_user u ON r.id=u.roleId WHERE r.id=${value}
+	</select>
+</mapper>

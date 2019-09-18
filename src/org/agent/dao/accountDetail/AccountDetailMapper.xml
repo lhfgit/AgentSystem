@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.agent.dao.accountDetail.AccountDetailMapper">
+	<select id="getAccountDetailList" resultType="accountDetail"
+		parameterType="accountDetail">
+		SELECT a.*,userName FROM as_accountdetail a JOIN as_user u ON
+		a.userid=u.id
+		<trim prefix="where " prefixOverrides="and|or">
+			<if test="userId !=null">and a.userId=#{userId}</if>
+			<if test="detailType !=null">and detailType=#{detailType}</if>
+			<if test="detailTypeName !=null">and detailTypeName=#{detailTypeName}</if>
+			<if test="money !=null">and money=#{money}</if>
+			<if test="accountMoney !=null">and accountMoney=#{accountMoney}</if>
+			<if test="startTime !=null">and
+				detailDateTime<![CDATA[>]]>=#{startTime}
+			</if>
+			<if test="endTime !=null">and
+				detailDateTime<![CDATA[<]]>=#{endTime}
+			</if>
+
+		</trim>
+		order by detailDateTime desc
+		<if test="starNum !=null and pageSize !=null">LIMIT #{starNum},#{pageSize}</if>
+	</select>
+	<select id="count" parameterType="accountDetail" resultType="int">
+		SELECT count(1) FROM as_accountdetail
+		<trim prefix="where " prefixOverrides="and|or">
+			<if test="userId !=null">and userId=#{userId}</if>
+			<if test="detailType !=null">and detailType=#{detailType}</if>
+			<if test="detailTypeName !=null">and detailTypeName=#{detailTypeName}</if>
+			<if test="money !=null">and money=#{money}</if>
+			<if test="accountMoney !=null">and accountMoney=#{accountMoney}</if>
+			<if test="startTime !=null">and
+				detailDateTime<![CDATA[>]]>=#{startTime}
+			</if>
+			<if test="endTime !=null">and
+				detailDateTime<![CDATA[<]]>=#{endTime}
+			</if>
+
+		</trim>
+
+	</select>
+	<insert id="addAccountDetail" parameterType="accountDetail">
+		insert into
+		as_accountdetail(userId,detailType,detailTypeName,money,accountMoney,memo,detailDateTime)
+		values(#{userId},#{detailType},#{detailTypeName},#{money},#{accountMoney},#{memo},#{detailDateTime})
+	</insert>
+	<update id="modifyAccountDetail" parameterType="accountDetail">
+
+		<trim prefix="update as_accountdetail set " suffix="where"
+			suffixOverrides=",">
+			<!-- <if test="userId !=null">and userId=#{userId}</if> -->
+			<if test="detailType !=null">and detailType=#{detailType},</if>
+			<if test="detailTypeName !=null">and detailTypeName=#{detailTypeName},</if>
+			<if test="money !=null">and money=#{money},</if>
+			<if test="accountMoney !=null">and accountMoney=#{accountMoney},</if>
+			<if test="detailDateTime !=null">and detailDateTime=#{detailDateTime},</if>
+		</trim>
+		id=#{id}
+	</update>
+	<delete id="deleteAccountDetail" parameterType="accountDetail">
+		delete from as_accountdetail where id=#{id}
+	</delete>
+</mapper>
